@@ -1,1 +1,15 @@
-
+---
+- hosts: win
+  vars:
+    admin: "{{ Adminid }}"
+    user: "{{ Userid }}"
+  tasks:
+   - name : Adding user to Existing Mailbox
+     win_shell: |
+      [String]$obj1 = "{{ admin }}"
+      [String]$obj2 = "{{ user }}"
+      $password=ConvertTo-SecureString "InduJ@1998" -AsPlainText -Force
+      $Cred=New-Object System.Management.Automation.PSCredential("Indraja@mailboxtask.onmicrosoft.com",$password)
+      $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell/ -Credential $Cred -Authentication Basic -AllowRedirection
+      Import-PSSession -Session $Session -DisableNameChecking
+      Add-MailboxPermission -Identity $obj2 -User $obj1 -AccessRights FullAccess -InheritanceType All -Automapping $false
